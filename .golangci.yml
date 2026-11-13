@@ -1,0 +1,35 @@
+# Based on .golangci.yml in siderolabs/discovery-service.
+
+version: "2"
+linters:
+  default: all
+  disable:
+    - exhaustruct # deprecated
+    - exhaustruct_v5 # requires every struct literal to set every field, including empty ones
+    - err113 # requires a package-level sentinel for every error
+    - funlen # limits lines per function
+    - gomodguard # deprecated
+    - mnd # flags unnamed number literals, such as the 10 in v.Text(10)
+    - nonamedreturns # flags named results
+    - paralleltest # requires t.Parallel() in every test
+    - varnamelen # flags short names such as w and r in HTTP handlers
+    - wrapcheck # requires wrapping every error from another package
+    - wsl # deprecated
+    - noinlineerr # flags if err := f(); err != nil
+    - embeddedstructfieldcheck # contradicts govet's fieldalignment on field order
+    - depguard # checks imports against a list of allowed packages
+  settings:
+    errcheck:
+      check-blank: true
+    govet:
+      enable-all: true
+formatters:
+  enable:
+    - gci
+    - gofumpt
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
