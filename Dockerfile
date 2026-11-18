@@ -6,4 +6,5 @@ RUN CGO_ENABLED=0 go build -trimpath -o /fibonacci-service .
 FROM scratch
 COPY --from=build /fibonacci-service /fibonacci-service
 USER 65534:65534
+EXPOSE 8080
 ENTRYPOINT ["/fibonacci-service"]

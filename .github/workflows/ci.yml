@@ -23,3 +23,20 @@ jobs:
       - run: make lint
       - run: make test
       - run: make image
+      - name: Image answers
+        run: |
+          docker run -d --name service -p 8080:8080 fibonacci-service
+          test "$(curl -sSf --retry 10 --retry-delay 1 --retry-all-errors 'http://localhost:8080/fibonacci?n=5')" = '[0,1,1,2,3]'
+      - name: Image stops cleanly
+        run: |
+          docker stop service
+          test "$(docker inspect -f '{{.State.ExitCode}}' service)" = 0
+      - name: Image logs to stdout
+        run: |
+          docker logs service 2>/dev/null | grep -q '"msg":"listening"'
+          docker logs service 2>/dev/null | grep -q '"msg":"shutting down"'
+      - name: Image rejects a bad argument
+        run: |
+          code=0
+          docker run --rm fibonacci-service foo || code=$?
+          test "$code" = 2
